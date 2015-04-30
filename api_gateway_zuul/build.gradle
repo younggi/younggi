@@ -1,0 +1,27 @@
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'eclipse-wtp'
+
+dependencies {
+	compile 'com.netflix.zuul:zuul-core:1.0.28'
+	compile 'log4j:log4j:1.2.17'
+	compile 'org.slf4j:slf4j-log4j12:1.7.12'
+	providedCompile 'javax.servlet:servlet-api:2.5'
+}
+
+eclipse {
+	classpath {
+		  downloadSources = true
+		  downloadJavadoc = true
+	}
+	wtp {
+		facet {
+			facet name: 'jst.web', version: '2.5' // Servlet Spec Version 지정
+			facet name: 'jst.java', version: '1.8' // Java Version 지정
+		}
+	}
+}
+
+repositories {
+    mavenCentral()
+}
