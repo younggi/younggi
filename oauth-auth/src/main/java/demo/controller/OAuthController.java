@@ -29,7 +29,7 @@ public class OAuthController {
 	public static final String RESPONSE_TYPE_TOKEN = "token";
 	
 	// Authorization Service
-	@RequestMapping(value="/oauth2/authorize", method=RequestMethod.POST)
+	@RequestMapping(value="/oauth/authorize", method=RequestMethod.POST)
 	public void authorize(HttpServletRequest request, HttpServletResponse response) throws IOException, OAuthSystemException {
 		
 		try {
@@ -85,7 +85,7 @@ public class OAuthController {
 	}	
 	
 	// Token Service (For Authorization token)
-	@RequestMapping(value="/oauth2/token", method=RequestMethod.POST)
+	@RequestMapping(value="/oauth/token1", method=RequestMethod.POST)
 	public void token(HttpServletRequest request, HttpServletResponse response) throws IOException, OAuthSystemException {
 		OAuthTokenRequest oauthTokenRequest = null;
 		OAuthResponse r = null;
@@ -131,7 +131,7 @@ public class OAuthController {
 	}
 	
 	// Token Service (For Resource owner Password Credentials)
-	@RequestMapping(value="/oauth2/token2", method=RequestMethod.POST)
+	@RequestMapping(value="/oauth/token2", method=RequestMethod.POST)
 	public void token2(HttpServletRequest request, HttpServletResponse response) throws IOException, OAuthSystemException {
 		OAuthUnauthenticatedTokenRequest oAuthRequest = null;
 		OAuthResponse r = null;
