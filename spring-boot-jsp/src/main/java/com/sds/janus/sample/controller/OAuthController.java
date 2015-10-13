@@ -2,8 +2,10 @@ package com.sds.janus.sample.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,22 +35,24 @@ public class OAuthController {
 	
 	private OAuthASIssuer oAuthASIssuer = new OAuthASIssuerImpl();
 
-	@RequestMapping("oauth2/authorize1")
+	@RequestMapping("/oauth2/authorize1")
 	public ResponseEntity<String> authorize1(OAuthRequest oAuthRequest,
-			HttpSession session) throws URISyntaxException {
+			HttpSession session) throws URISyntaxException, UnsupportedEncodingException {
 		
 		OAuthAuthzRequestEx oAuthAuthzRequestEx = new OAuthAuthzRequestEx(oAuthRequest);
 		
 		validateRedirectionURI(oAuthAuthzRequestEx);
 
 		HttpHeaders httpHeaders = new HttpHeaders();
-		if (session.getAttribute("permission").equals("true")) {
+		if (session.getAttribute("permission") != null 
+				&& session.getAttribute("permission").equals("true")) {
+			session.setAttribute("permission", "false");
 			OAuthAuthzResponseEx oAuthAuthzResponseEx = 
 					new OAuthAuthzResponseEx(oAuthAuthzRequestEx, oAuthASIssuer.authorizationCode());
 			httpHeaders.setLocation(oAuthAuthzResponseEx.getLocationUri());
 		} else {
-			
-			httpHeaders.setLocation(new URI("permissionpage?redirect="));
+			httpHeaders.setLocation(new URI("/permissionpage?redirect="
+							+URLEncoder.encode("/oauth2/authorize1?" + oAuthRequest.getParam(), "UTF-8")));
 		}
 		
 		return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
@@ -63,7 +67,7 @@ public class OAuthController {
 				+"\n"	+ oAuthzRequest.getScopes());
 	}
 	
-	@RequestMapping("oauth2/authorize2")
+	@RequestMapping("/oauth2/authorize2")
 	public void authorize(HttpServletRequest request, HttpServletResponse response) 
 			throws IOException {
 
@@ -76,8 +80,20 @@ public class OAuthController {
 
 		response.sendRedirect(oAuthAuthzResponseEx.getLocationUri().toString());
 	}
-	
+
 	@RequestMapping(value="/oauth2/token1")
+	public OAuthResponse token(OAuthRequest request) {
+		OAuthTokenRequestEx oAuthTokenRequestEx = new OAuthTokenRequestEx(request);
+		
+		validateRedirectionURI(oAuthTokenRequestEx);
+		
+		OAuthTokenResponseEx oAuthTokenResponseEx = 
+				new OAuthTokenResponseEx(oAuthASIssuer.accessToken(), oAuthASIssuer.refreshToken(), "3600");
+		
+		return oAuthTokenResponseEx.getOAuthResponse();
+	}
+	
+	@RequestMapping(value="/oauth2/token2")
 	public void token(HttpServletRequest request, HttpServletResponse response) 
 			throws IOException {
 		OAuthTokenRequestEx oAuthTokenRequestEx = new OAuthTokenRequestEx(request);
@@ -94,23 +110,12 @@ public class OAuthController {
 		pw.close();
 	}
 	
-	@RequestMapping(value="/oauth2/token2")
-	public OAuthResponse token(OAuthRequest request) {
-		OAuthTokenRequestEx oAuthTokenRequestEx = new OAuthTokenRequestEx(request);
-		
-		validateRedirectionURI(oAuthTokenRequestEx);
-		
-		OAuthTokenResponseEx oAuthTokenResponseEx = 
-				new OAuthTokenResponseEx(oAuthASIssuer.accessToken(), oAuthASIssuer.refreshToken(), "3600");
-		
-		return oAuthTokenResponseEx.getOAuthResponse();
-	}
-	
 	private void validateRedirectionURI(OAuthTokenRequestEx oAuthzRequest) {
-		logger.info(oAuthzRequest.getClientId()
+		logger.info("\n" + oAuthzRequest.getClientId()
 				+"\n"	+ oAuthzRequest.getClientSecret()
 				+"\n"	+ oAuthzRequest.getRedirectURI()
 				+"\n"	+ oAuthzRequest.getGrantType()
 				+"\n"	+ oAuthzRequest.getCode());
 	}	
+	
 }

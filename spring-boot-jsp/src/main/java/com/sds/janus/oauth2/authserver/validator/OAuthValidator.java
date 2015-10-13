@@ -27,7 +27,7 @@ public class OAuthValidator {
 				Field field = clazz.getDeclaredField(checkField.toString());
 				field.setAccessible(true);
 				if (field.get(object) == null) {
-					throw new RuntimeException();
+					throw new RuntimeException(checkField.toString()+ " is null");
 				}
 			} catch (Exception ex) {
 				ex.printStackTrace();

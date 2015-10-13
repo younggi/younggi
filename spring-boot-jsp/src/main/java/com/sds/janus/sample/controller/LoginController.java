@@ -1,7 +1,6 @@
 package com.sds.janus.sample.controller;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 import javax.servlet.http.HttpSession;
 
@@ -41,19 +40,9 @@ public class LoginController {
 		logger.info("password: {}",password);
 		logger.info("redirect: {}",redirect);
 		
-		String redirectUrl = null;
-		
 		session.setAttribute("login", "true");
 		
-		switch(type) {
-		case "oauth":
-			redirectUrl = "permissionpage?redirect="+URLEncoder.encode(redirect,"UTF-8");
-			break;
-		default:
-			redirectUrl=redirect;
-		}
-		
-		return "redirect:" + redirectUrl;
+		return "redirect:" + redirect;
 	}
 	
 	@RequestMapping(value="/permissionpage")
@@ -67,8 +56,9 @@ public class LoginController {
 	
 	@RequestMapping(value="/permission", method=RequestMethod.POST)
 	public String permission(
-			@RequestParam(value="redirect", required=false) String redirect
-			) {
+			@RequestParam(value="redirect", required=false) String redirect,
+			HttpSession session) {
+		session.setAttribute("permission", "true");
 		return "redirect:" + redirect;
 	}
 	

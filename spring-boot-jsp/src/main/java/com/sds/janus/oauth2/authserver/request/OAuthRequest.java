@@ -2,8 +2,6 @@ package com.sds.janus.oauth2.authserver.request;
 
 import java.lang.reflect.Field;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class OAuthRequest {
 
@@ -80,27 +78,28 @@ public class OAuthRequest {
 	
 	public String getParam() {
 		Class clazz = OAuthRequest.class;
-		Field[] fields = clazz.getDeclaredFields();		
-		Stream<Field> fieldStream = Stream.of(fields); 
-		return fieldStream.filter(t -> t.get(this) != null)
-								.map(t -> t.getName() + "=" + t.getType().cast(t.get(this)))
-								.collect(Collectors.joining("&"));
-
-//		for (Field field : fields) {
-//			field.setAccessible(true);
-//			try {
-//				Object object = field.get(this);
-//				
-//				if (object != null) {
-//					buffer.append(field.getName())
-//								.append("=")
-//								.append(field.getType().cast(object));
-//				}
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
+		Field[] fields = clazz.getDeclaredFields();
+		StringBuffer buffer = new StringBuffer();
+		for (int i = 0; i<fields.length; i++) {
+			Field field = fields[i];
+			field.setAccessible(true);
+			try {
+				Object object = field.get(this);
+				if (object != null) {
+					buffer.append(field.getName())
+								.append("=")
+								.append(field.getType().cast(object));
+					
+					if (i != fields.length-1) {
+						buffer.append("&");
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return buffer.toString();
 	}
-	
-	public static wrapCheckException
+
 }

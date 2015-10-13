@@ -11,10 +11,9 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-@Component
+@Component("sessionCheckInterceptor")
 public class SessionCheckInterceptor extends HandlerInterceptorAdapter {
 	
 	private static final Logger logger = LoggerFactory.getLogger(SessionCheckInterceptor.class);
@@ -26,13 +25,12 @@ public class SessionCheckInterceptor extends HandlerInterceptorAdapter {
 		logger.info("Execute Prehandle");
 		Optional<String> token = Optional.ofNullable(request.getHeader("Authorization"));
 		
-		if (!token.isPresent()) {
+		if (token.isPresent()) {
+			super.preHandle(request, response, handler);
+		} else {
 			logger.info("Authorization Header is null");
 			HttpSession session = request.getSession();
 			token = Optional.ofNullable((String) session.getAttribute("login"));
-		}
-		
-		if (!token.isPresent()) {
 
 			StringBuffer redirectCommand = new StringBuffer();
 			redirectCommand.append("/loginpage?redirect=");
@@ -62,15 +60,5 @@ public class SessionCheckInterceptor extends HandlerInterceptorAdapter {
 		}
 		
 		return super.preHandle(request, response, handler);
-	}
-	
-	@Override
-	public void postHandle(HttpServletRequest request,
-			HttpServletResponse response, Object handler, ModelAndView modelAndView)
-			throws Exception {
-		
-		logger.info("Execute PostHandle");
-		
-		super.postHandle(request, response, handler, modelAndView);
 	}
 }
