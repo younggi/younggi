@@ -6,6 +6,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sds.janus.oauth2.authserver.issuer.OAuthASIssuer;
 import com.sds.janus.oauth2.authserver.issuer.OAuthASIssuerImpl;
+import com.sds.janus.oauth2.authserver.manager.OAuthTokenManager;
 import com.sds.janus.oauth2.authserver.request.OAuthAuthzRequestEx;
 import com.sds.janus.oauth2.authserver.request.OAuthRequest;
 import com.sds.janus.oauth2.authserver.request.OAuthTokenRequestEx;
@@ -34,6 +38,9 @@ public class OAuthController {
 	private final Logger logger = LoggerFactory.getLogger(OAuthController.class);
 	
 	private OAuthASIssuer oAuthASIssuer = new OAuthASIssuerImpl();
+	
+	@Autowired
+	private OAuthTokenManager oAuthTokenManager; 
 
 	@RequestMapping("/oauth2/authorize1")
 	public ResponseEntity<String> authorize1(OAuthRequest oAuthRequest,
@@ -89,6 +96,11 @@ public class OAuthController {
 		
 		OAuthTokenResponseEx oAuthTokenResponseEx = 
 				new OAuthTokenResponseEx(oAuthASIssuer.accessToken(), oAuthASIssuer.refreshToken(), "3600");
+		
+		Map<String,String> tokenInfo = new HashMap<String,String>();
+		tokenInfo.put("client_id", oAuthTokenRequestEx.getClientId());
+		oAuthTokenManager.setOAuthtokenInfo(oAuthTokenResponseEx.getOAuthResponse().getAccess_token(), 
+				tokenInfo);
 		
 		return oAuthTokenResponseEx.getOAuthResponse();
 	}

@@ -22,43 +22,39 @@ public class SessionCheckInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request,
 			HttpServletResponse response, Object handler) throws Exception {
 		
-		logger.info("Execute Prehandle");
-		Optional<String> token = Optional.ofNullable(request.getHeader("Authorization"));
-		
-		if (token.isPresent()) {
-			super.preHandle(request, response, handler);
-		} else {
-			logger.info("Authorization Header is null");
 			HttpSession session = request.getSession();
-			token = Optional.ofNullable((String) session.getAttribute("login"));
-
-			StringBuffer redirectCommand = new StringBuffer();
-			redirectCommand.append("/loginpage?redirect=");
-
-			StringBuffer redirectParam = new StringBuffer();
-			redirectParam.append(request.getRequestURI());			
-			Enumeration<String> params = request.getParameterNames();
-			String param = null;
-			if (params.hasMoreElements()) {
-				param = params.nextElement();
-				redirectParam.append("?")
-					.append(param)
-					.append("=")
-					.append(request.getParameter(param));
+			String checkLogin = (String) session.getAttribute("login");
+			if (checkLogin != null 
+					&& checkLogin.equals("true")) {
+				return super.preHandle(request, response, handler);
+			} else {
+	
+				StringBuffer redirectCommand = new StringBuffer();
+				redirectCommand.append("/loginpage?redirect=");
+	
+				StringBuffer redirectParam = new StringBuffer();
+				redirectParam.append(request.getRequestURI());			
+				Enumeration<String> params = request.getParameterNames();
+				String param = null;
+				if (params.hasMoreElements()) {
+					param = params.nextElement();
+					redirectParam.append("?")
+						.append(param)
+						.append("=")
+						.append(request.getParameter(param));
+				}
+				while (params.hasMoreElements()) {
+					param = params.nextElement();
+					redirectParam.append("&")
+						.append(param)
+						.append("=")
+						.append(request.getParameter(param));
+				}
+				logger.info("original : {}", redirectParam.toString() );
+				logger.info("encoded : {}", URLEncoder.encode(redirectParam.toString(),"UTF-8") );
+				response.sendRedirect(redirectCommand.toString()+URLEncoder.encode(redirectParam.toString(),"UTF-8"));
+				
+				return false;
 			}
-			while (params.hasMoreElements()) {
-				param = params.nextElement();
-				redirectParam.append("&")
-					.append(param)
-					.append("=")
-					.append(request.getParameter(param));
-			}
-			logger.info("original : {}", redirectParam.toString() );
-			logger.info("encoded : {}", URLEncoder.encode(redirectParam.toString(),"UTF-8") );
-			response.sendRedirect(redirectCommand.toString()+URLEncoder.encode(redirectParam.toString(),"UTF-8"));
-			return false;
-		}
-		
-		return super.preHandle(request, response, handler);
 	}
 }

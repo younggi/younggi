@@ -23,6 +23,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 		registry.addInterceptor(sessionInterceptor)
 			.excludePathPatterns("/loginpage","/login","/error","/resources/**");
 		registry.addInterceptor(authenticationInterceptor)
-		.excludePathPatterns("/loginpage","/login","/error","/oauth2/**","/permission/**","/redirect");
+		.excludePathPatterns("/loginpage","/login","/error","/oauth2/**","/permissionpage","/permission","/redirect");
 	}
 }

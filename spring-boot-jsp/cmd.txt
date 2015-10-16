@@ -1,0 +1,81 @@
+https://cloud.digitalocean.com/v1/oauth/authorize?response_type=code&client_id=CLIENT_ID&redirect_uri=CALLBACK_URL&scope=read
+
+
+http://localhost:8080/oauth2/authorize1?response_type=code&client_id=younggi&redirect_uri=http://localhost:8080/redirect&scope=read
+
+##### Authorization Server ######
+
+# Authorization code
+
+- request 
+curl -v -X POST -d "response_type=code&client_id=younggi&redirect_uri=http://localhost:8080/callback&scope=read" http://localhost:8080/oauth2/authorize
+
+- response 
+curl -v http://localhost:8080/callback?code=d05b1c3a9fb338102eb4a26ebc0fe913
+
+
+- request
+curl -v -X POST -d "grant_type=authorization_code&client_id=younggi&client_secret=secret&code=d05b1c3a9fb338102eb4a26ebc0fe913&redirect_uri=http://localhost:8080/redirect" http://localhost:8080/oauth2/token
+
+- response 
+{
+    "access_token":"c3d46a8e060700f9acb40c3ba6a7b439",
+    "refresh_token":"d4fa882adc15c26015ade3e064100138",
+    "expires_in":3600
+}
+
+# Implicit 
+
+- request 
+curl -v -X POST -d "response_type=token&client_id=younggi&redirect_uri=http://localhost:8080/callback&scope=read" http://localhost:8080/oauth2/authorize
+
+- response
+curl -v http://localhost:8080/callback#access_token=73fffa75ec2779ed2c817785ef18d7d8
+
+# Resource Owner Password Credentials
+
+- request
+curl -v -X POST -d "grant_type=password&username=younggi&password=password&client_id=younggiclientapp" http://localhost:8080/oauth2/token2
+
+- response 
+{
+    "access_token":"d247257a30e5e77d5e28b75792277432",
+    "refresh_token":"2f64cdd36a8f2bf34f378d07c3f9ea86",
+    "expires_in":3600
+}
+
+# Client Credentials
+
+- request
+curl -v -X POST -d "grant_type=client_credentials&client_id=younggi&client_secret=password" http://localhost:8080/oauth2/token
+
+- response 
+{
+    "access_token":"deddce2ad1a11e3812158009a771c84c",
+    "refresh_token":"8c1b1b5b98592acce266c1aed382a32e",
+    "expires_in":3600
+}
+
+##### Resource Server #####
+
+- request 
+curl -v http://localhost:8080/resources
+
+- response (if unauthorized)
+HTTP/1.1 401 Unauthorized
+Server: Apache-Coyote/1.1
+WWW-Authenticate: Bearer realm="Album Example"
+Content-Length: 0
+Date: Fri, 11 Sep 2015 07:16:55 GMT
+
+
+curl -v -H "Authorization: Bearer XVAS.sfasf" http://localhost:8080/resources/user
+##### Client ######
+
+
+http://localhost:8080/oauth2/login?redirect=http://www.naver.com
+
+
+http://localhost:8080/loginpage?redirect=http://www.naver.com&type=oauth
+
+http://localhost:8080/oauth2/authorize1?redirect=http://www.naver.com
