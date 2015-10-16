@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.sds.janus.oauth2.resserver.request.OAuthResourceRequestEx;
+import com.sds.janus.oauth2.resserver.request.OAuthResourceRequestEx.ParamStyle;
+
 @Component("authorizationCheckInterceptor")
 public class AuthorizationCheckInterceptor extends HandlerInterceptorAdapter {
 
@@ -21,21 +24,15 @@ public class AuthorizationCheckInterceptor extends HandlerInterceptorAdapter {
 		
 		logger.info("Execute Prehandle");
 		
-		Optional<String> token = Optional.ofNullable(request.getHeader("Authorization"));
+		OAuthResourceRequestEx oAuthResourceRequestEx = new OAuthResourceRequestEx(request, ParamStyle.HEADER);
+		
+		Optional<String> token = oAuthResourceRequestEx.getAccessToken();
 		
 		if (token.isPresent()) {
 			logger.info("TOKEN : {}", token);
-			String[] tokens = token.toString().split(" ");
-			if (tokens.length == 2) {
-				logger.info("Type : {}" , tokens[0]);
-				logger.info("Value : {}" , tokens[1]);
-			} else {
-				logger.info("Authorization Header is null");
-				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				return false;
-			}
 
 		} else {
+			logger.info("Authorization Header is null");			
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return false;
 		}
