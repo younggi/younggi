@@ -11,18 +11,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
 	@Autowired
-	@Qualifier("sessionCheckInterceptor")
-	private HandlerInterceptor sessionInterceptor;  
+	@Qualifier("loginCheckInterceptor")
+	private HandlerInterceptor loginCheckInterceptor;  
 
 	@Autowired
-	@Qualifier("authorizationCheckInterceptor")
-	private HandlerInterceptor authenticationInterceptor;  
+	@Qualifier("oAuthTokenCheckInterceptor")
+	private HandlerInterceptor oAuthTokenCheckInterceptor;  
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(sessionInterceptor)
-			.excludePathPatterns("/loginpage","/login","/error","/resources/**");
-		registry.addInterceptor(authenticationInterceptor)
+		registry.addInterceptor(loginCheckInterceptor)
+			.excludePathPatterns("/loginpage","/login","/error","/oauth2/token","/resources/**");
+		registry.addInterceptor(oAuthTokenCheckInterceptor)
 		.excludePathPatterns("/loginpage","/login","/error","/oauth2/**","/permissionpage","/permission","/redirect");
 	}
 }

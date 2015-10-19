@@ -11,6 +11,8 @@ public class OAuthRequest {
 	private String grant_type;
 	private String client_secret;
 	private String code;
+	private String username;
+	private String password;
 	private Set<String> scope;
 	
 	public String getClient_id() {
@@ -55,7 +57,18 @@ public class OAuthRequest {
 	public void setScope(Set<String> scope) {
 		this.scope = scope;
 	}
-	
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
 	// For AbstractOAuthRequestEx
 	public String getClientId() {
 		return getClient_id();

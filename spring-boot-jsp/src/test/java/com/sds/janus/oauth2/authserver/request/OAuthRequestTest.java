@@ -3,6 +3,7 @@ package com.sds.janus.oauth2.authserver.request;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 public class OAuthRequestTest {
@@ -17,7 +18,6 @@ public class OAuthRequestTest {
 		scopes.add("456");
 		oAuthRequest.setScope(scopes);
 
-		System.out.println(oAuthRequest.getParam());
-	}
-	
+		Assert.assertEquals("Result is not equal", oAuthRequest.getParam(), "client_id=abc&response_type=test&scope=[123, 456]");
+		}	
 }

@@ -18,7 +18,7 @@ public class ClientController {
 		redirectAttr.addAttribute("code", code);
 		redirectAttr.addAttribute("redirect_uri","http://www.naver.com");
 		
-		return "redirect:/oauth2/token1";
+		return "redirect:/oauth2/token";
 	}
 
 }

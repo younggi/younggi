@@ -24,12 +24,32 @@ public class OAuthTokenRequestEx extends AbstractOAuthRequestEx {
 	}	
 	
 	private void validate() {
-		validate(requestObject,requestClazz,
-				Arrays.asList(OAuthValidator.CheckField.client_id,
-						OAuthValidator.CheckField.code,
-						OAuthValidator.CheckField.redirect_uri,
-						OAuthValidator.CheckField.grant_type
-						));
+		switch(getGrantType()) {
+		case "authorization_code":
+			validate(requestObject,requestClazz,
+					Arrays.asList(OAuthValidator.CheckField.client_id,
+							OAuthValidator.CheckField.code,
+							OAuthValidator.CheckField.redirect_uri,
+							OAuthValidator.CheckField.grant_type
+							));
+		break;
+		case "password":
+			validate(requestObject,requestClazz,
+					Arrays.asList(OAuthValidator.CheckField.client_id,
+							OAuthValidator.CheckField.username,
+							OAuthValidator.CheckField.password,
+							OAuthValidator.CheckField.grant_type
+							));
+		break;
+		case "client_credentials":
+			validate(requestObject,requestClazz,
+					Arrays.asList(OAuthValidator.CheckField.client_id,
+							OAuthValidator.CheckField.client_id,
+							OAuthValidator.CheckField.client_secret,
+							OAuthValidator.CheckField.grant_type
+							));
+		break;			
+		}
 	}
 	
 	public String getGrantType() {		

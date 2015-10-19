@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-@Component("sessionCheckInterceptor")
+@Component("loginCheckInterceptor")
 public class LoginCheckInterceptor extends HandlerInterceptorAdapter {
 	
 	private static final Logger logger = LoggerFactory.getLogger(LoginCheckInterceptor.class);

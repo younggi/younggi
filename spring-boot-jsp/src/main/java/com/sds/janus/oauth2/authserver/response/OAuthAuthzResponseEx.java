@@ -11,12 +11,23 @@ public class OAuthAuthzResponseEx {
 	
 	private OAuthAuthzRequestEx oAuthAuthzRequestEx = null;
 	
+	private String codeOrtoken = null;
+	
 	private String locationUri = null;
 	
 	public OAuthAuthzResponseEx(OAuthAuthzRequestEx oAuthAuthzRequestEx, String codeOrToken) {
 		this.oAuthAuthzRequestEx = oAuthAuthzRequestEx;
 		locationUri = makeLocationUrl(codeOrToken);
+		this.codeOrtoken = codeOrToken;
 	}	
+	
+	public String getCode() {
+		return codeOrtoken;
+	}
+	
+	public String getToken() {
+		return codeOrtoken;
+	}
 	
 	private String makeLocationUrl(String codeOrToken) {
 		String type = "";

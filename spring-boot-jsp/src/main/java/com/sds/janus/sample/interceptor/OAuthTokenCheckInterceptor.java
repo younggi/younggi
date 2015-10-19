@@ -15,7 +15,7 @@ import com.sds.janus.oauth2.authserver.manager.OAuthTokenManager;
 import com.sds.janus.oauth2.resserver.request.OAuthResourceRequestEx;
 import com.sds.janus.oauth2.resserver.request.OAuthResourceRequestEx.ParamStyle;
 
-@Component("authorizationCheckInterceptor")
+@Component("oAuthTokenCheckInterceptor")
 public class OAuthTokenCheckInterceptor extends HandlerInterceptorAdapter {
 
 	private static final Logger logger = LoggerFactory.getLogger(OAuthTokenCheckInterceptor.class);

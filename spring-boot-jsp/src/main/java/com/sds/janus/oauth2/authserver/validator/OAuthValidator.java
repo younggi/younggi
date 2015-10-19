@@ -5,7 +5,15 @@ import java.util.List;
 
 public class OAuthValidator {
 
-	public enum CheckField { response_type, client_id, grant_type, code, redirect_uri };
+	public enum CheckField { response_type, 
+		client_id,
+		client_secret,
+		grant_type, 
+		code, 
+		redirect_uri, 
+		username, 
+		password,
+		};
 	
 	private List<CheckField> checkFields = null;  
 	

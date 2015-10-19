@@ -42,8 +42,8 @@ public class OAuthController {
 	@Autowired
 	private OAuthTokenManager oAuthTokenManager; 
 
-	@RequestMapping("/oauth2/authorize1")
-	public ResponseEntity<String> authorize1(OAuthRequest oAuthRequest,
+	@RequestMapping("/oauth2/authorize")
+	public ResponseEntity<String> authorize(OAuthRequest oAuthRequest,
 			HttpSession session) throws URISyntaxException, UnsupportedEncodingException {
 		
 		OAuthAuthzRequestEx oAuthAuthzRequestEx = new OAuthAuthzRequestEx(oAuthRequest);
@@ -54,12 +54,22 @@ public class OAuthController {
 		if (session.getAttribute("permission") != null 
 				&& session.getAttribute("permission").equals("true")) {
 			session.setAttribute("permission", "false");
+			
 			OAuthAuthzResponseEx oAuthAuthzResponseEx = 
 					new OAuthAuthzResponseEx(oAuthAuthzRequestEx, oAuthASIssuer.authorizationCode());
+
+			// response_type=token
+			if (oAuthAuthzRequestEx.getResponseType().equals("token")) {
+				Map<String,String> tokenInfo = new HashMap<String,String>();
+				tokenInfo.put("client_id", oAuthAuthzRequestEx.getClientId());
+				oAuthTokenManager.setOAuthtokenInfo(oAuthAuthzResponseEx.getToken(), 
+						tokenInfo, 3600);
+			}			
+			
 			httpHeaders.setLocation(oAuthAuthzResponseEx.getLocationUri());
 		} else {
 			httpHeaders.setLocation(new URI("/permissionpage?redirect="
-							+URLEncoder.encode("/oauth2/authorize1?" + oAuthRequest.getParam(), "UTF-8")));
+							+URLEncoder.encode("/oauth2/authorize?" + oAuthRequest.getParam(), "UTF-8")));
 		}
 		
 		return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
@@ -88,7 +98,7 @@ public class OAuthController {
 		response.sendRedirect(oAuthAuthzResponseEx.getLocationUri().toString());
 	}
 
-	@RequestMapping(value="/oauth2/token1")
+	@RequestMapping(value="/oauth2/token")
 	public OAuthResponse token(OAuthRequest request) {
 		OAuthTokenRequestEx oAuthTokenRequestEx = new OAuthTokenRequestEx(request);
 		
