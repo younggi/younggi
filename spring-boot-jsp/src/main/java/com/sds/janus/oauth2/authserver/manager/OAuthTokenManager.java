@@ -4,7 +4,7 @@ import java.util.Map;
 
 public interface OAuthTokenManager {
 	
-	public void setOAuthtokenInfo(String accessToken, Map<String,String> tokenInfo);
+	public void setOAuthtokenInfo(String accessToken, Map<String,String> tokenInfo, long timeout);
 	public Map<String,String> getOAuthtokenInfo(String accessToken);
 	public boolean checkToken(String accessToken);
 	

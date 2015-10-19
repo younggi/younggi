@@ -1,7 +1,7 @@
 package com.sds.janus.sample.manager;
 
 import java.util.Map;
-import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -21,8 +21,9 @@ public class OAuthRedisTokenManager implements OAuthTokenManager {
 
 	@Override
 	public void setOAuthtokenInfo(String accessToken,
-			Map<String, String> tokenInfo) {
+			Map<String, String> tokenInfo, long timeout) {
 		redisTemplate.opsForHash().putAll(accessToken, tokenInfo);
+		redisTemplate.expire(accessToken, timeout, TimeUnit.SECONDS);
 	}
 
 	@Override
@@ -32,6 +33,6 @@ public class OAuthRedisTokenManager implements OAuthTokenManager {
 
 	@Override
 	public boolean checkToken(String accessToken) {
-		return Optional.ofNullable(getOAuthtokenInfo(accessToken)).isPresent();
+		return !getOAuthtokenInfo(accessToken).isEmpty();
 	}
 }

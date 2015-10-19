@@ -100,7 +100,7 @@ public class OAuthController {
 		Map<String,String> tokenInfo = new HashMap<String,String>();
 		tokenInfo.put("client_id", oAuthTokenRequestEx.getClientId());
 		oAuthTokenManager.setOAuthtokenInfo(oAuthTokenResponseEx.getOAuthResponse().getAccess_token(), 
-				tokenInfo);
+				tokenInfo, 3600);
 		
 		return oAuthTokenResponseEx.getOAuthResponse();
 	}

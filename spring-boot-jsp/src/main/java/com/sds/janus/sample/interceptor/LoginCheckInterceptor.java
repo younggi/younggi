@@ -2,7 +2,6 @@ package com.sds.janus.sample.interceptor;
 
 import java.net.URLEncoder;
 import java.util.Enumeration;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,9 +13,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 @Component("sessionCheckInterceptor")
-public class SessionCheckInterceptor extends HandlerInterceptorAdapter {
+public class LoginCheckInterceptor extends HandlerInterceptorAdapter {
 	
-	private static final Logger logger = LoggerFactory.getLogger(SessionCheckInterceptor.class);
+	private static final Logger logger = LoggerFactory.getLogger(LoginCheckInterceptor.class);
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request,
